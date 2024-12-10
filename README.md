@@ -85,15 +85,11 @@ outputs = model(**inputs)
 
 ### Example Outputs
 
-![Example Image 1](https://github.com/AarohiSingla/Detection-Transformer/assets/60029146/363726ba-01d0-4856-80a7-f5adc103ee7e)
+![image](https://github.com/user-attachments/assets/c714af91-8d4f-4782-8e4e-38907b745c96)
 
-![Example Image 2](https://github.com/AarohiSingla/Detection-Transformer/assets/60029146/297a2dae-7525-4bdb-8f40-6571fa201160)
+![image](https://github.com/user-attachments/assets/d9268dc0-f987-4e5c-8611-2c8354472f27)
 
-![Example Image 3](https://github.com/AarohiSingla/Detection-Transformer/assets/60029146/55fe0e82-e744-4787-9567-49d764928a3c)
-
-### License
-
-This project is open-source and available under the MIT License.
+![image](https://github.com/user-attachments/assets/495b8bfc-a780-4d2c-8905-727beeb00b94)
 
 ---
 
