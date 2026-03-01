@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.env
+.venv
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Model checkpoints & large files
+results/checkpoints/
+*.ckpt
+*.pt
+*.pth
+
+# ONNX models (large)
+*.onnx
+
+# Dataset (never commit raw data)
+data/bone*/
+data/*.json
+data/*.jpg
+data/*.png
+data/*.dcm
+
+# Logs
+results/logs/
+lightning_logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Keep results structure but not outputs
+results/*.csv
+results/*.png
+results/gradcam/
+results/predictions/
+
+# Keep .gitkeep files
+!results/.gitkeep
+!data/.gitkeep
