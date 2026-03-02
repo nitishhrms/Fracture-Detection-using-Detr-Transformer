@@ -1,12 +1,4 @@
-"""
-benchmark.py — Latency benchmarking: PyTorch vs ONNX Runtime
-Benchmarks batch sizes 1/4/8/16 at FP32 and FP16.
-Outputs results/benchmark_results.csv and a chart.
 
-Usage:
-    python export/benchmark.py --onnx_fp32 results/detr_fracture_fp32.onnx \
-                                --onnx_fp16 results/detr_fracture_fp16.onnx
-"""
 import argparse
 import os
 import time
@@ -28,6 +20,8 @@ def bench_pytorch(model, batch_size: int, dtype=torch.float32, device="cpu", run
     model.eval().to(device)
     if dtype == torch.float16:
         model = model.half()
+    else:
+        model = model.float()
 
     pv = torch.randn(batch_size, 3, IMAGE_SIZE, IMAGE_SIZE, dtype=dtype, device=device)
     pm = torch.ones(batch_size, IMAGE_SIZE, IMAGE_SIZE, dtype=dtype, device=device)

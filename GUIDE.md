@@ -7,15 +7,19 @@
 
 ## What Is This Project?
 
-This project detects **bone fractures in X-ray images** using a **DETR (Detection Transformer)** — a deep learning model from Facebook AI that finds objects in images using transformers (the same technology behind ChatGPT, but applied to vision).
+This project detects **bone fractures in X-ray images** using a **DETR (Detection Transformer)**, a deep learning model from Facebook AI that finds objects in images using transformers (the same technology behind ChatGPT, but applied to vision).
 
 **Why DETR?**
+
 - Traditional object detectors (YOLO, Faster-RCNN) need hand-crafted anchors and NMS post-processing
-- DETR does everything end-to-end — no anchors, no NMS, just transformers
-- This makes it cleaner, more principled, and easier to explain in interviews
+
+- DETR does everything end-to-end — no anchors, no NMS, just transformers..
+
 
 **What the model does:**
+
 Input → X-ray image (JPEG or DICOM)
+
 Output → Bounding boxes around fractures + confidence scores
 
 ---
@@ -45,6 +49,7 @@ fracture-detection-detr/
 
 **Key concepts:**
 - **COCO format**: A standard way to store image annotations. Each image has a JSON entry with bounding box coordinates `[x, y, width, height]` and a class label ("fracture")
+
 - **DICOM**: Medical image format used by hospitals (`.dcm` files). Regular images are `.jpg`/`.png`. This file handles both
 - **pydicom**: A Python library to read DICOM files. Converts pixel data → NumPy array → RGB image
 - **CocoDetection**: Inherits from PyTorch's built-in dataset class. The `__getitem__` method returns (image_tensor, target_dict) for each image
@@ -391,6 +396,43 @@ The notebook runs the same pipeline interactively, cell by cell.
 
 ---
 
+## test_all.py — Full End-to-End Test Suite
+
+**What it does:** Runs every part of the project on synthetic (fake) data so you can verify the whole pipeline works without needing a real dataset.
+
+**How to run:**
+```bash
+python test_all.py
+```
+
+**What it tests (12 checks):**
+
+| # | Test | What it verifies |
+|---|---|---|
+| 1 | All imports | Every required package loads correctly |
+| 2 | Model loads | DETR initialises with 41M parameters |
+| 3 | Dataset loads | COCO loader reads 4 dummy images (train/val/test) |
+| 4 | DICOM loading | pydicom reads a synthetic `.dcm` file → RGB image |
+| 5 | Forward pass | Model runs on CUDA/CPU, output shape is correct |
+| 6 | GradCAM | Heatmap is generated, values are in [0, 1] |
+| 7 | GradCAM saves | 3-panel PNG written to `results/gradcam/` |
+| 8 | Single inference | `predict_single()` returns an annotated PIL image |
+| 9 | Clinical metrics | All 5 metrics present and in valid range [0, 1] |
+| 10 | ONNX export | FP32 `.onnx` file created and passes `onnx.checker` |
+| 11 | Parity test | PyTorch vs ORT max diff ≤ 1e-3 at batch 1 and 2 |
+| 12 | Benchmark | Latency CSV + chart saved to `results/` |
+
+**Expected output:**
+```
+============================================================
+  RESULTS: 12/12 PASSED
+============================================================
+```
+
+> The metrics test (test 9) will show 0% sensitivity/AUC because the pretrained model has not been fine-tuned on fracture data yet — that is expected and correct. The test only checks that the metrics pipeline runs without crashing.
+
+---
+
 ## Common Errors & Fixes
 
 | Error | Cause | Fix |
@@ -401,6 +443,7 @@ The notebook runs the same pipeline interactively, cell by cell.
 | `FileNotFoundError: _annotations.coco.json` | Dataset path wrong | Check `--dataset_root` path exactly |
 | `onnx export failed: custom ops` | DETR custom ops | Use `opset_version=14` (already set) |
 | `parity test FAILED` | Float precision mismatch | Increase `--atol` to `1e-3` for FP16 |
+| `Input type (FloatTensor) and weight type (HalfTensor) should be the same` | Benchmark FP16 bug (fixed) | Model was left as `.half()` between batch iterations — fixed in `export/benchmark.py` |
 
 ---
 
